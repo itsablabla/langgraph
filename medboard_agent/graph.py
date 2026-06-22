@@ -3,6 +3,7 @@ MedBoard AI Agent
 =================
 An ambient intelligence layer for medical board management.
 Surfaces critical signals from patient data, scheduling, and team communications.
+Uses Claude (Anthropic) as the reasoning engine.
 """
 
 from __future__ import annotations
@@ -10,9 +11,9 @@ from __future__ import annotations
 import os
 from typing import Annotated, Sequence, TypedDict
 
+from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
-from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
@@ -79,12 +80,12 @@ TOOLS = [get_patient_summary, triage_signal, search_clinical_guidelines]
 
 
 # ---------------------------------------------------------------------------
-# LLM
+# LLM — Claude (Anthropic)
 # ---------------------------------------------------------------------------
 
 def _build_llm():
-    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    return ChatOpenAI(model=model, temperature=0).bind_tools(TOOLS)
+    model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-haiku-20241022")
+    return ChatAnthropic(model=model, temperature=0).bind_tools(TOOLS)
 
 
 # ---------------------------------------------------------------------------
